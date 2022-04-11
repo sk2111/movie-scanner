@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moview Beast</title>
+    <style>
+      .center {
+        text-align: center;
+      }
+      .lastUpdated {
+        color: cadetblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1 class="center">Movie watcher</h1>
+      <h3 id="lastUpdatedAt" class="center lastUpdated"></h3>
+      <h6 style="color: red" id="error" class="center"></h6>
+      <div></div>
+    </div>
+    <script>
+      const lastUpdatedAt = document.getElementById("lastUpdatedAt");
+      const error = document.getElementById("error");
+      function handleTheatreInfoUpdate(theatreInfo) {
+        const dates = Object.keys(theatreInfo);
+        dates.forEach((date) => {
+          const { names, isMatchFound } = theatreInfo[date];
+          const elemNames = names.map(() => {});
+        });
+      }
+      function watch() {
+        fetch("http://localhost:8080/movieInfo")
+          .then((res) => res.json())
+          .then((response) => {
+            lastUpdatedAt.innerText = response.lastUpdated;
+            error.innerText = response.error;
+            const theatreInfo = response.theatreInfo;
+            handleTheatreInfoUpdate(theatreInfo);
+            console.log(response);
+          });
+      }
+      watch();
+      setInterval(() => {
+        watch();
+      }, 5000);
+    </script>
+  </body>
+</html>
