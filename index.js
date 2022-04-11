@@ -68,8 +68,6 @@ setInterval(async () => {
 }, 10000);
 
 app.get("/", (req, res) => {
-  response.lastUpdated = new Date().toLocaleString();
-  response.error = null;
   res.sendFile(path.join(__dirname, "/index.html"));
 });
 
