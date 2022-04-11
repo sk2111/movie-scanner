@@ -1,4 +1,7 @@
 const puppeteer = require("puppeteer");
+const express = require("express");
+const app = express();
+const port = 8080;
 
 const beastMovieUrl = [
   "https://in.bookmyshow.com/buytickets/beast-coimbatore/movie-coim-ET00311733-MT/20220413", //13 April
@@ -45,18 +48,25 @@ async function checkMovie(url, theatreNameMatch) {
     await browser.close();
   } catch (e) {
     response.error = e.message;
-    console.log("oops error", e.message);
+    console.log("OOPS ERROR:", e.message);
   }
 }
 
-setInterval(() => {
+app.get("/movieInfo", (req, res) => {
   try {
     response.lastUpdated = new Date();
     response.error = null;
-    beastMovieUrl.forEach(async (url) => {
-      checkMovie(url, "kg");
+    beastMovieUrl.forEach((url) => {
+      checkMovie(url, theatreNameMatch);
     });
+    res.json(response);
   } catch (e) {
-    console.log("oops error", e.message);
+    response.error = e.message;
+    console.log("OOPS ERROR:", e.message);
+    res.json(response);
   }
-}, 5000);
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
