@@ -8,23 +8,55 @@ const beastMovieUrl = [
 
 const theatreNameMatch = "prozone";
 
-async function checkMovie(movieUrl, theatreNameMatch) {
+const response = {
+  lastUpdated: new Date(),
+  error: null,
+  theatreInfo: {
+    20220413: {
+      names: [],
+      isMatchFound: false,
+    },
+    20220414: {
+      names: [],
+      isMatchFound: false,
+    },
+    20220415: {
+      names: [],
+      isMatchFound: false,
+    },
+  },
+};
+
+async function checkMovie(url, theatreNameMatch) {
   const browser = await puppeteer.launch();
-  movieUrl.forEach(async (url, idx) => {
+  try {
+    const key = url.split("/").pop();
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(url, { waitUntil: "load" });
     const names = await page.$$eval(".__venue-name", (theatreNames) => {
       return theatreNames.map((tag) => tag.textContent);
     });
     const isMatchFound = names.find((name) =>
       name.toLowerCase().includes(theatreNameMatch),
     );
-    console.log(names);
-    console.log("Match found", isMatchFound);
-    if (idx === movieUrl.length - 1) {
-      // await browser.close();
-    }
-  });
+    response.theatreInfo[key].names = names;
+    response.theatreInfo[key].isMatchFound = !!isMatchFound;
+    console.log(response);
+    await browser.close();
+  } catch (e) {
+    response.error = e.message;
+    console.log("oops error", e.message);
+  }
 }
 
-checkMovie(beastMovieUrl, theatreNameMatch);
+setInterval(() => {
+  try {
+    response.lastUpdated = new Date();
+    response.error = null;
+    beastMovieUrl.forEach(async (url) => {
+      checkMovie(url, "kg");
+    });
+  } catch (e) {
+    console.log("oops error", e.message);
+  }
+}, 5000);
