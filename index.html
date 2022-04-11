@@ -12,33 +12,52 @@
       .lastUpdated {
         color: cadetblue;
       }
+      .red {
+        color: red;
+        font-size: 20px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <div>
       <h1 class="center">Movie watcher</h1>
       <h3 id="lastUpdatedAt" class="center lastUpdated"></h3>
-      <h6 style="color: red" id="error" class="center"></h6>
-      <div></div>
+      <h3 style="color: red" id="error" class="center"></h3>
+      <div id="movieList"></div>
     </div>
     <script>
       const lastUpdatedAt = document.getElementById("lastUpdatedAt");
       const error = document.getElementById("error");
+      const movieList = document.getElementById("movieList");
+
       function handleTheatreInfoUpdate(theatreInfo) {
         const dates = Object.keys(theatreInfo);
+        let finalText = "";
         dates.forEach((date) => {
           const { names, isMatchFound } = theatreInfo[date];
-          const elemNames = names.map(() => {});
+          const elemNames = names.map((name) => {
+            if (
+              name.toLowerCase().includes("prozone") ||
+              name.toLowerCase().includes("inox")
+            ) {
+              return `<li class="red">${name}</li>`;
+            }
+            return `<li>${name}</li>`;
+          });
+          const template = `<h1>${date}</h1><ul>${elemNames.join("")}</ul>`;
+          finalText = finalText + template;
         });
+        movieList.innerHTML = finalText;
       }
       function watch() {
         fetch("http://localhost:8080/movieInfo")
           .then((res) => res.json())
           .then((response) => {
-            lastUpdatedAt.innerText = response.lastUpdated;
+            lastUpdatedAt.innerText =
+              "Last Updated Time - " + response.lastUpdated;
             error.innerText = response.error;
-            const theatreInfo = response.theatreInfo;
-            handleTheatreInfoUpdate(theatreInfo);
+            handleTheatreInfoUpdate(response.theatreInfo);
             console.log(response);
           });
       }
