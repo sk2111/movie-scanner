@@ -11,7 +11,7 @@ const beastMovieUrl = [
 
 const theatreNameMatch = "prozone";
 
-const response = {
+const template = {
   lastUpdated: new Date(),
   error: null,
   theatreInfo: {
@@ -29,6 +29,8 @@ const response = {
     },
   },
 };
+
+const response = JSON.parse(JSON.stringify(template));
 
 async function checkMovie(url, theatreNameMatch) {
   const browser = await puppeteer.launch();
