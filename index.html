@@ -34,13 +34,18 @@
       function handleTheatreInfoUpdate(theatreInfo) {
         const dates = Object.keys(theatreInfo);
         let finalText = "";
+        let isMovieDetected = false;
         dates.forEach((date) => {
           const { names, isMatchFound } = theatreInfo[date];
+          if (isMatchFound) {
+            isMovieDetected = isMatchFound;
+          }
           const elemNames = names.map((name) => {
             if (
               name.toLowerCase().includes("prozone") ||
               name.toLowerCase().includes("inox")
             ) {
+              isMovieDetected = true;
               return `<li class="red">${name}</li>`;
             }
             return `<li>${name}</li>`;
@@ -49,6 +54,15 @@
           finalText = finalText + template;
         });
         movieList.innerHTML = finalText;
+        if (isMovieDetected) {
+          console.log("Movie detected");
+          let utterance = new SpeechSynthesisUtterance(
+            "Beast movie booking opened",
+          );
+          utterance.rate = 0.85;
+          speechSynthesis.cancel();
+          speechSynthesis.speak(utterance);
+        }
       }
       function watch() {
         fetch("http://localhost:8080/movieInfo")
@@ -64,7 +78,7 @@
       watch();
       setInterval(() => {
         watch();
-      }, 2000);
+      }, 10000);
     </script>
   </body>
 </html>
