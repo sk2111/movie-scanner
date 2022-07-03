@@ -12,7 +12,6 @@ let page;
 })();
 
 const beastMovieUrl = [
-  "https://in.bookmyshow.com/buytickets/beast-coimbatore/movie-coim-ET00311733-MT/20220413", //13 April
   "https://in.bookmyshow.com/buytickets/beast-coimbatore/movie-coim-ET00311733-MT/20220414", //14 April
   "https://in.bookmyshow.com/buytickets/beast-coimbatore/movie-coim-ET00311733-MT/20220415", //15 April
 ];
@@ -23,10 +22,6 @@ const template = {
   lastUpdated: null,
   error: null,
   theatreInfo: {
-    20220413: {
-      names: [],
-      isMatchFound: false,
-    },
     20220414: {
       names: [],
       isMatchFound: false,
@@ -48,6 +43,7 @@ async function checkMovie(url, theatreNameMatch) {
       return theatreNames.map((tag) => tag.textContent);
     });
     //console.log("Check names", names);
+    //names.push("inoz prozone mall");
     const isMatchFound = names.find((name) =>
       name.toLowerCase().includes(theatreNameMatch),
     );
@@ -64,7 +60,6 @@ setInterval(async () => {
   response.error = null;
   await checkMovie(beastMovieUrl[0], theatreNameMatch);
   await checkMovie(beastMovieUrl[1], theatreNameMatch);
-  await checkMovie(beastMovieUrl[2], theatreNameMatch);
 }, 10000);
 
 app.get("/", (req, res) => {
